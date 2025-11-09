@@ -30,7 +30,7 @@ struct LocalDestinationBuilderModifier: ViewModifier {
   let builder: () -> AnyView
 
   @StateObject var destinationID = LocalDestinationIDHolder()
-  @EnvironmentObject var destinationBuilder: DestinationBuilderHolder
+    @Environment(\.destinationBuilder) var destinationBuilder // Changed this line
   @EnvironmentObject var pathHolder: NavigationPathHolder
   @Environment(\.isWithinNavigationStack) var isWithinNavigationStack
 
@@ -42,11 +42,13 @@ struct LocalDestinationBuilderModifier: ViewModifier {
         fatalError("isWithinNavigationStack shouldn't ever be true on platforms that don't support it")
       }
     } else {
-      let _ = destinationBuilder.appendLocalBuilder(identifier: destinationID.id, builder)
-      let _ = destinationID.setDestinationBuilder(destinationBuilder)
+      let _ = destinationBuilder?.appendLocalBuilder(identifier: destinationID.id, builder)
+    if let destinationBuilder = destinationBuilder{
+        let _ = destinationID.setDestinationBuilder(destinationBuilder)
+    }
 
       content
-        .environmentObject(destinationBuilder)
+        .environment(\.destinationBuilder, destinationBuilder)
         .onChange(of: pathHolder.path) { _ in
           if isPresented.wrappedValue {
             if !pathHolder.path.contains(where: { ($0 as? LocalDestinationID) == destinationID.id }) {

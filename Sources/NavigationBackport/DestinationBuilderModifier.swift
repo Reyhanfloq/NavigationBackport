@@ -5,12 +5,23 @@ import SwiftUI
 struct DestinationBuilderModifier<TypedData>: ViewModifier {
   let typedDestinationBuilder: DestinationBuilder<TypedData>
 
-  @EnvironmentObject var destinationBuilder: DestinationBuilderHolder
+    @Environment(\.destinationBuilder) var destinationBuilder // Changed this line
 
   func body(content: Content) -> some View {
-    destinationBuilder.appendBuilder(typedDestinationBuilder)
+    destinationBuilder?.appendBuilder(typedDestinationBuilder)
 
     return content
-      .environmentObject(destinationBuilder)
+          .environment(\.destinationBuilder, destinationBuilder)
+  }
+}
+
+struct DestinationBuilderKey: EnvironmentKey {
+  static let defaultValue: DestinationBuilderHolder? = nil
+}
+
+extension EnvironmentValues {
+  var destinationBuilder: DestinationBuilderHolder? {
+    get { self[DestinationBuilderKey.self] }
+    set { self[DestinationBuilderKey.self] = newValue }
   }
 }

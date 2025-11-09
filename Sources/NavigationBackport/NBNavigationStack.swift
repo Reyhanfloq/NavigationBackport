@@ -48,7 +48,7 @@ public struct NBNavigationStack<Root: View, Data: Hashable>: View {
     content
       .environmentObject(path)
       .environmentObject(Unobserved(object: path))
-      .environmentObject(destinationBuilder)
+      .environment(\.destinationBuilder, destinationBuilder)
       .environmentObject(navigator)
       .onFirstAppear {
         if useInternalTypedPath {

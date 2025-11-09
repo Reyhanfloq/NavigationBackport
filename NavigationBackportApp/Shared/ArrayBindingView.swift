@@ -134,3 +134,4 @@ private struct EmojiView: View {
       .navigationTitle("Visualise \(visualisation.count)")
   }
 }
+
